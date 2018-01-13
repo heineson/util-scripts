@@ -1,0 +1,34 @@
+#!/bin/bash
+
+VM=$1
+
+KVM_MODULES=(kvm_intel kvm)
+VB_MODULES=(vboxpci vboxnetflt vboxnetadp vboxdrv)
+
+if [ $# -eq 0 ]; then
+  if [ "x$(sudo lsmod | grep kvm)" == "x" ]; then
+    VM="kvm"
+  else
+    VM="vbox"
+  fi
+fi
+
+if [ "$VM" == "kvm" ]; then
+  for i in ${VB_MODULES[@]}; do
+    sudo rmmod $i
+  done
+  for i in ${KVM_MODULES[@]}; do
+    sudo modprobe $i
+  done
+fi
+
+if [ "$VM" == "vbox" ]; then
+  for i in ${KVM_MODULES[@]}; do
+    sudo rmmod $i
+  done
+  for i in ${VB_MODULES[@]}; do
+    sudo modprobe $i
+  done
+fi
+
+echo "Switched to $VM"
