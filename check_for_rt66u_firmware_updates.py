@@ -14,7 +14,9 @@ def parse_firmware_version_info(jsonstr):
         objects = data['Result']['Obj']
         firmwareSets = [o['Files'] for o in objects if o['Name'] == 'Firmware']
         releasedate_and_titles = [(f['ReleaseDate'], f['Title']) for fs in firmwareSets for f in fs]
-        print(get_todays_releases(releasedate_and_titles))
+        releases = get_todays_releases(releasedate_and_titles)
+        if releases != []:
+            print(releases)
     else:
         print('Got Error response from server')
         sys.exit(1)
